@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Para Larissa 💘</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#ffe8f1" />
+  <style>
+    :root{
+      --bg1:#fff5f8; /* rosa bem clarinho */
+      --bg2:#ffeef7; /* rosinha */
+      --card:#ffffff;
+      --ink:#4c3a47;
+      --accent:#ff6fa2; /* rosa chiclete suave */
+      --accent-2:#ff99bf; /* rosinha secundária */
+      --muted:#8e7a86;
+      --shadow: 0 10px 30px rgba(255, 105, 180, .15);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background: radial-gradient(1200px 800px at 20% -10%, #fff, transparent),
+                  radial-gradient(1400px 1000px at 120% 10%, #fff, transparent),
+                  linear-gradient(160deg,var(--bg1),var(--bg2));
+      overflow-x:hidden;
+    }
+    .floaty{
+      position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+    }
+    .heart{ position:absolute; font-size:18px; opacity:.7; animation:float var(--speed,12s) linear infinite; filter: drop-shadow(0 4px 8px rgba(255,105,180,.25));}
+    @keyframes float{
+      0%{ transform:translateY(110vh) translateX(0) rotate(0deg); opacity:.0 }
+      10%{opacity:.9}
+      100%{ transform:translateY(-15vh) translateX(var(--drift, 40px)) rotate(360deg); opacity:0 }
+    }
+
+    main{
+      position:relative; z-index:1; max-width:940px; margin:48px auto; padding:16px;
+    }
+    .card{
+      background:var(--card); border-radius:24px; box-shadow:var(--shadow); padding:28px; margin:0 12px 18px;
+      backdrop-filter:saturate(1.1) blur(2px);
+    }
+    h1{ font-size:clamp(28px, 5vw, 44px); margin:0 0 6px; letter-spacing:.2px }
+    .sub{ color:var(--muted); margin:0 0 20px; font-size:clamp(14px, 2.6vw, 16px) }
+
+    .grid{ display:grid; gap:16px }
+    @media(min-width:860px){ .grid{ grid-template-columns:1.1fr 1.1fr } }
+
+    .module{ border:2px dashed #ffd3e6; border-radius:20px; padding:18px; background:linear-gradient(180deg,#fff, #fff8fb) }
+    .module h2{ margin:0 0 8px; font-size:clamp(18px, 3.2vw, 24px) }
+    .module p{ margin:0 0 10px }
+
+    .btn{
+      display:inline-flex; align-items:center; gap:8px; cursor:pointer; border:none; border-radius:999px; padding:12px 18px;
+      background:linear-gradient(180deg,var(--accent), var(--accent-2)); color:#fff; font-weight:700; box-shadow:0 8px 20px rgba(255,111,162,.35);
+      transition: transform .08s ease, filter .2s ease;
+    }
+    .btn:hover{ transform:translateY(-1px) }
+    .btn:active{ transform:translateY(1px) }
+    .btn.ghost{ background:#fff; color:var(--accent); border:2px solid var(--accent); box-shadow:none }
+
+    .output{
+      background:#fff; border:1px solid #ffe1ee; border-radius:16px; padding:14px 16px; margin-top:10px; min-height:48px;
+      font-size:16px; line-height:1.5
+    }
+    .big{ font-size:clamp(20px,3.8vw,28px); font-weight:800 }
+
+    .row{ display:flex; flex-wrap:wrap; gap:10px; align-items:center }
+    input[type="date"], input[type="time"], input[type="text"]{
+      appearance:none; border:2px solid #ffd3e6; border-radius:12px; padding:10px 12px; font:inherit; outline:none; min-width:160px;
+      background:#fff
+    }
+    label{ font-size:13px; color:var(--muted) }
+
+    .range{ width:100%; }
+    .range input{ width:100% }
+
+    .center{ text-align:center }
+    .badge{ display:inline-block; background:#fff0f6; color:var(--accent); border:1px solid #ffd3e6; border-radius:999px; padding:6px 12px; font-weight:700 }
+
+    footer{ text-align:center; color:var(--muted); font-size:14px; padding:18px 0 6px }
+    a.inline{ color:var(--accent); font-weight:700; text-decoration:none }
+
+    /* "Não" fujão */
+    .playground{ position:relative; min-height:70px }
+    .runaway{ position:relative }
+    .runaway.moving{ position:absolute; }
+
+    /* Quiz */
+    .quiz ul{ list-style:none; padding:0; margin:8px 0 0 }
+    .quiz li{ margin:8px 0 }
+    .quiz button{ width:100%; text-align:left }
+  </style>
+</head>
+<body>
+  <div id="floaty" class="floaty" aria-hidden="true"></div>
+
+  <main>
+    <section class="card center">
+      <div class="badge">Para a Larissa 💖</div>
+      <h1>Oi, Larissa!</h1>
+      <p class="sub">Este é um cantinho fofo feito com carinho. Explore, clique, brinque — e sorria. ✨</p>
+    </section>
+
+    <section class="grid">
+      <!-- Elogios -->
+      <section class="module">
+        <h2>Gerador de elogios</h2>
+        <p>Toque no botão e receba um mimo instantâneo. </p>
+        <div class="row">
+          <button class="btn" id="btn-elogio">Quero um elogio 💌</button>
+          <button class="btn ghost" id="btn-copiar" title="Copia o último elogio">Copiar</button>
+        </div>
+        <div id="elogio" class="output" aria-live="polite"></div>
+      </section>
+
+      <!-- Date + Não fujão -->
+      <section class="module">
+        <h2>Bora um date? 🗓️</h2>
+        <p>Responda com sinceridade extrema:</p>
+        <div class="playground" id="playground">
+          <button class="btn" id="btn-sim">Sim 😍</button>
+          <button class="btn ghost runaway" id="btn-nao">Não 😅</button>
+        </div>
+        <div id="planner" class="output" style="display:none">
+          <div class="row" style="margin-bottom:10px">
+            <div>
+              <label>Dia</label><br>
+              <input type="date" id="data" />
+            </div>
+            <div>
+              <label>Hora</label><br>
+              <input type="time" id="hora" />
+            </div>
+            <div style="flex:1; min-width:200px">
+              <label>Local/combinação</label><br>
+              <input type="text" id="local" placeholder="Sorvete + pôr do sol" />
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn" id="btn-ideia">Surpreenda com uma ideia ✨</button>
+            <button class="btn ghost" id="btn-ics">Gerar convite (.ics)</button>
+          </div>
+          <div id="ideia" class="output" style="margin-top:10px"></div>
+        </div>
+      </section>
+
+      <!-- Fofurômetro -->
+      <section class="module">
+        <h2>Fofurômetro 💗</h2>
+        <p>Ajuste o nível e veja a magia acontecer no fundo…</p>
+        <div class="range">
+          <input id="slider" type="range" min="1" max="10" value="5" />
+        </div>
+        <div id="nivel" class="output">Nível: 5/10 — equilíbrio perfeito entre calmaria e borboletas no estômago 🦋</div>
+      </section>
+
+      <!-- Quiz fofinho -->
+      <section class="module quiz">
+        <h2>Quiz fofinho 🎀</h2>
+        <p>Qual a resposta correta?</p>
+        <ul>
+          <li><button class="btn ghost" data-wrong>Larissa é 100% encanto às vezes</button></li>
+          <li><button class="btn ghost" data-wrong>Larissa é 100% encanto só quando quer</button></li>
+          <li><button class="btn" id="right">Larissa é 100% encanto sempre 💫</button></li>
+        </ul>
+        <div id="quiz-out" class="output"></div>
+      </section>
+    </section>
+
+    <footer>
+      Feito com carinho por Matheus • <span style="opacity:.7">se quiser, posso personalizar mais 💭</span>
+    </footer>
+  </main>
+
+  <script>
+    // ====== Corações flutuantes ======
+    const floaty = document.getElementById('floaty');
+    const HEARTS_MAX = 28; // quantidade base
+    let speedFactor = 1;
+
+    function spawnHeart(){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.textContent = Math.random() < .5 ? '❤' : '💗';
+      const size = 14 + Math.random()*22; // 14–36
+      const left = Math.random()*100; // vw
+      const drift = (Math.random()*120 - 60) + 'px';
+      const duration = (9 + Math.random()*9) / speedFactor; // 9–18s / fator
+      h.style.left = left + 'vw';
+      h.style.fontSize = size + 'px';
+      h.style.setProperty('--drift', drift);
+      h.style.setProperty('--speed', duration + 's');
+      h.style.bottom = '-40px';
+      floaty.appendChild(h);
+      setTimeout(()=> h.remove(), duration*1000);
+    }
+    // Loop de geração
+    setInterval(()=>{ if(document.hidden) return; if(floaty.childElementCount < HEARTS_MAX) spawnHeart(); }, 400);
+
+    // ====== Elogios ======
+    const elogios = [
+      'Larissa, seu sorriso parece feriado prolongado: dá vontade de ficar.',
+      'Seu jeito ilumina a sala e as horas — efeito Larissa™.',
+      'Você tem o dom raro de deixar tudo mais leve e bonito.',
+      'Larissa, sua risada vicia mais que trailer de série boa.',
+      'Cada conversa com você é tipo sol batendo na janela de manhã.',
+      'Se existisse playlist de gente incrível, você seria a faixa 1.',
+      'Seu olhar é abrigo — e meu lugar favorito.',
+      'Larissa, você tem cheiro de tarde feliz.',
+      'O mundo fica mais gentil quando você aparece.',
+      'Seu abraço mental já melhora meu dia.',
+      'Larissa, você é estética e afeto na mesma pessoa.',
+      'Você mistura elegância com fofura na medida certa.',
+      'Quando penso em boas notícias, penso em você.',
+      'Larissa, você é meu emoji favorito na vida real.',
+      'Seu bom humor combina com qualquer clima.',
+      'Você tem cara de spoiler bom do universo.',
+      'Larissa, até o silêncio contigo é confortável.',
+      'Você traz paz de tela inicial organizada.',
+      'Larissa, sua vibe é meu lugar seguro.',
+      'Você é a legenda perfeita para qualquer momento bonito.'
+    ];
+
+    const oElogio = document.getElementById('elogio');
+    let ultimoElogio = '';
+    document.getElementById('btn-elogio').addEventListener('click', ()=>{
+      const pick = elogios[Math.floor(Math.random()*elogios.length)];
+      ultimoElogio = pick;
+      oElogio.innerHTML = '<span class="big">“'+ pick + '”</span>';
+      burstHearts();
+    });
+    document.getElementById('btn-copiar').addEventListener('click', async ()=>{
+      if(!ultimoElogio){ oElogio.textContent = 'Peça um elogio primeiro 😉'; return; }
+      try{ await navigator.clipboard.writeText(ultimoElogio); oElogio.textContent = 'Copiado! Cole no seu chat ✨'; }
+      catch{ oElogio.textContent = ultimoElogio + ' (copie manualmente)'; }
+    });
+
+    // ====== Botão "Não" que foge ======
+    const btnNao = document.getElementById('btn-nao');
+    const playground = document.getElementById('playground');
+    let escaped = 0;
+    function runAway(){
+      btnNao.classList.add('moving');
+      const pad = 6;
+      const area = playground.getBoundingClientRect();
+      const w = btnNao.offsetWidth, h = btnNao.offsetHeight;
+      const maxX = Math.max(0, area.width - w - pad);
+      const maxY = Math.max(0, area.height - h - pad);
+      const x = Math.random()*maxX;
+      const y = Math.random()*maxY;
+      btnNao.style.transform = `translate(${x}px, ${y}px)`;
+      escaped++;
+      if(escaped>5){ btnNao.textContent = 'Ok, ok! 😂'; }
+    }
+    btnNao.addEventListener('mouseenter', runAway);
+    btnNao.addEventListener('touchstart', (e)=>{ e.preventDefault(); runAway(); }, {passive:false});
+
+    // ====== Planner/convite ======
+    const planner = document.getElementById('planner');
+    const btnSim = document.getElementById('btn-sim');
+    const ideiaOut = document.getElementById('ideia');
+
+    btnSim.addEventListener('click', ()=>{
+      planner.style.display = 'block';
+      idea();
+      burstHearts(18);
+    });
+
+    const ideias = [
+      'Piquenique com frutas e playlist nossa no fim da tarde.',
+      'Sorvete + pôr do sol + fotos bobas.',
+      'Cinema em casa com cobertor, chocolate quente e filme surpresa.',
+      'Tour de cafés locais e votação do melhor capuccino.',
+      'Passeio noturno de carro ouvindo nossas músicas favoritas.',
+      'Jogos de tabuleiro + pizza de dois sabores.',
+      'Feirinha de rua + pastel + risadas.',
+      'Museu/galeria e comentários de críticos profissionais (nós).',
+      'Aula improvisada de dança na sala (vale errar o passo).',
+      'Céu aberto, estrelas e conversas longas.'
+    ];
+    function idea(){
+      const pick = ideias[Math.floor(Math.random()*ideias.length)];
+      ideiaOut.textContent = 'Ideia: ' + pick;
+    }
+    document.getElementById('btn-ideia').addEventListener('click', idea);
+
+    // ICS
+    document.getElementById('btn-ics').addEventListener('click', ()=>{
+      const d = document.getElementById('data').value; // yyyy-mm-dd
+      const t = document.getElementById('hora').value || '19:00';
+      const loc = (document.getElementById('local').value || 'Lugar surpresa').trim();
+      if(!d){ ideiaOut.textContent = 'Escolha um dia 😉'; return; }
+      const startLocal = new Date(d + 'T' + t);
+      const endLocal = new Date(startLocal.getTime() + 2*60*60*1000); // +2h
+      const ics = buildICS('Encontro com Matheus 💘', 'Um date fofinho com a Larissa. ✨', loc, startLocal, endLocal);
+      download('convite-date.ics', ics);
+      ideiaOut.textContent = 'Convite gerado! Abra no seu calendário 📅';
+    });
+
+    function pad(n){ return (n<10? '0': '') + n }
+    function toICSDate(d){
+      // converter para UTC e formato DTSTART: YYYYMMDDTHHMMSSZ
+      const y = d.getUTCFullYear();
+      const m = pad(d.getUTCMonth()+1);
+      const day = pad(d.getUTCDate());
+      const h = pad(d.getUTCHours());
+      const min = pad(d.getUTCMinutes());
+      const s = pad(d.getUTCSeconds());
+      return `${y}${m}${day}T${h}${min}${s}Z`;
+    }
+    function buildICS(title, desc, loc, start, end){
+      const now = new Date();
+      const uid = now.getTime()+"-larissa";
+      return [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Matheus//LarissaDate//EN',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'BEGIN:VEVENT',
+        'UID:'+uid,
+        'DTSTAMP:'+toICSDate(now),
+        'DTSTART:'+toICSDate(start),
+        'DTEND:'+toICSDate(end),
+        'SUMMARY:'+escapeICS(title),
+        'DESCRIPTION:'+escapeICS(desc),
+        'LOCATION:'+escapeICS(loc),
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+    }
+    function escapeICS(str){ return String(str).replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;'); }
+    function download(filename, text){
+      const blob = new Blob([text], {type:'text/calendar'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // ====== Fofurômetro ======
+    const slider = document.getElementById('slider');
+    const nivel = document.getElementById('nivel');
+    slider.addEventListener('input', ()=>{
+      const v = Number(slider.value);
+      speedFactor = 0.6 + (v/10)*1.4; // 0.6–2.0
+      nivel.textContent = `Nível: ${v}/10 — ` + (
+        v<3 ? 'modo relax total 😌' :
+        v<6 ? 'equilíbrio perfeito 🦋' :
+        v<8 ? 'corações acelerados 💞' : 'tempestade de fofura!!! 🌧️❤️'
+      );
+    });
+
+    // ====== Quiz ======
+    const quizOut = document.getElementById('quiz-out');
+    document.querySelectorAll('[data-wrong]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        quizOut.textContent = 'Hmmm… quase! Tente de novo 😜';
+      })
+    })
+    document.getElementById('right').addEventListener('click', ()=>{
+      quizOut.innerHTML = 'Resposta: corretíssima! Você ganhou um abraço virtual 🤗';
+      burstHearts(14);
+    })
+
+    // ====== Efeito de corações ao estourar ======
+    function burstHearts(qty=10){
+      const rect = document.body.getBoundingClientRect();
+      for(let i=0;i<qty;i++){
+        const span = document.createElement('span');
+        span.textContent = Math.random()<.5? '❤':'💖';
+        span.style.position='fixed';
+        span.style.left = (rect.width/2 + (Math.random()*120-60)) + 'px';
+        span.style.top = (window.scrollY + 120 + Math.random()*40) + 'px';
+        span.style.fontSize = (18 + Math.random()*18) + 'px';
+        span.style.opacity = '1';
+        span.style.transition = 'transform 800ms ease, opacity 900ms ease';
+        document.body.appendChild(span);
+        requestAnimationFrame(()=>{
+          span.style.transform = `translate(${(Math.random()*160-80)}px, ${- (60 + Math.random()*90)}px)`;
+          span.style.opacity = '0';
+        })
+        setTimeout(()=> span.remove(), 1000);
+      }
+    }
+  </script>
+</body>
+</html>
