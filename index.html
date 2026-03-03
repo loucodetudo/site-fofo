@@ -171,6 +171,29 @@
         </ul>
         <div id="quiz-out" class="output"></div>
       </section>
+
+      <!-- Missão romântica + engraçada -->
+      <section class="module">
+        <h2>Missão do casal 🎯💘</h2>
+        <p>Um clique e o universo escolhe uma missão romântica (e meio caótica) para vocês.</p>
+        <div class="row">
+          <button class="btn" id="btn-missao">Sortear missão</button>
+          <button class="btn ghost" id="btn-desculpa">Preciso de desculpa romântica 😂</button>
+        </div>
+        <div id="missao-out" class="output"></div>
+      </section>
+
+      <!-- Compatibilidade -->
+      <section class="module">
+        <h2>Compatibilidade do momento 🔮</h2>
+        <p>Digite os nomes e descubra o nível de química entre romance e risadas.</p>
+        <div class="row">
+          <input type="text" id="nome1" placeholder="Seu nome" />
+          <input type="text" id="nome2" placeholder="Larissa" />
+          <button class="btn" id="btn-ship">Calcular ship 💞</button>
+        </div>
+        <div id="ship-out" class="output"></div>
+      </section>
     </section>
 
     <footer>
@@ -368,6 +391,56 @@
       quizOut.innerHTML = 'Resposta: corretíssima! Você ganhou um abraço virtual 🤗';
       burstHearts(14);
     })
+
+    // ====== Missões + desculpas engraçadas ======
+    const missaoOut = document.getElementById('missao-out');
+    const missoes = [
+      'Missão #1: tirar 3 selfies fofas e escolher a mais boba pra guardar.',
+      'Missão #2: duelinho de elogios por 60 segundos (sem repetir!).',
+      'Missão #3: escolher uma música e dançar 30 segundos sem vergonha.',
+      'Missão #4: inventar um apelido secreto nível romance premium.',
+      'Missão #5: fazer um mini piquenique com qualquer snack da casa.',
+      'Missão #6: mandar um áudio com voz de locutor apaixonado.'
+    ];
+    const desculpas = [
+      'Desculpa oficial: eu me atrasei porque estava escolhendo o melhor sorriso pra te ver 😌',
+      'Motivo técnico: coração em modo turbo quando penso em você 💓',
+      'Falha no sistema: meu GPS só recalcula rota pra onde você está 🗺️',
+      'Comprovante: perdi 5 minutos ensaiando como te achar ainda mais linda ✨',
+      'Relatório: fui interrompido por uma crise de saudade aguda 😅'
+    ];
+
+    document.getElementById('btn-missao').addEventListener('click', ()=>{
+      const pick = missoes[Math.floor(Math.random()*missoes.length)];
+      missaoOut.textContent = pick;
+      burstHearts(12);
+    });
+
+    document.getElementById('btn-desculpa').addEventListener('click', ()=>{
+      const pick = desculpas[Math.floor(Math.random()*desculpas.length)];
+      missaoOut.textContent = pick;
+    });
+
+    // ====== Compatibilidade divertida ======
+    function scoreFromNames(a, b){
+      const raw = (a + '💘' + b).toLowerCase().trim();
+      let sum = 0;
+      for(const ch of raw){ sum += ch.codePointAt(0) || 0; }
+      return (sum % 41) + 60; // 60-100
+    }
+
+    document.getElementById('btn-ship').addEventListener('click', ()=>{
+      const n1 = (document.getElementById('nome1').value || 'Matheus').trim();
+      const n2 = (document.getElementById('nome2').value || 'Larissa').trim();
+      const score = scoreFromNames(n1, n2);
+      const shipOut = document.getElementById('ship-out');
+      const msg =
+        score < 70 ? 'química em aquecimento com risadinhas tímidas 😄' :
+        score < 85 ? 'romance estável com potencial de comédia romântica 🍿' :
+                     'casal lendário: fofura + caos + paixão no talo 💥💖';
+      shipOut.innerHTML = `<strong>${n1} + ${n2}: ${score}%</strong><br>${msg}`;
+      if(score >= 85) burstHearts(18);
+    });
 
     // ====== Efeito de corações ao estourar ======
     function burstHearts(qty=10){
