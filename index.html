@@ -95,6 +95,18 @@
     .quiz ul{ list-style:none; padding:0; margin:8px 0 0 }
     .quiz li{ margin:8px 0 }
     .quiz button{ width:100%; text-align:left }
+
+    .chat-log{
+      background:#fff; border:1px solid #ffe1ee; border-radius:14px; padding:10px; height:190px; overflow:auto;
+      display:flex; flex-direction:column; gap:8px; margin-top:10px;
+    }
+    .bubble{ max-width:85%; padding:8px 10px; border-radius:12px; font-size:14px; line-height:1.35 }
+    .bubble.me{ align-self:flex-end; background:#ffd9e8; }
+    .bubble.peer{ align-self:flex-start; background:#f4f0ff; }
+    textarea{
+      appearance:none; border:2px solid #ffd3e6; border-radius:12px; padding:10px 12px; font:inherit; outline:none; width:100%; min-height:74px; resize:vertical;
+      background:#fff
+    }
   </style>
 </head>
 <body>
@@ -170,6 +182,60 @@
           <li><button class="btn" id="right">Larissa é 100% encanto sempre 💫</button></li>
         </ul>
         <div id="quiz-out" class="output"></div>
+      </section>
+
+      <!-- Missão romântica + engraçada -->
+      <section class="module">
+        <h2>Missão do casal 🎯💘</h2>
+        <p>Um clique e o universo escolhe uma missão romântica (e meio caótica) para vocês.</p>
+        <div class="row">
+          <button class="btn" id="btn-missao">Sortear missão</button>
+          <button class="btn ghost" id="btn-desculpa">Preciso de desculpa romântica 😂</button>
+        </div>
+        <div id="missao-out" class="output"></div>
+      </section>
+
+      <!-- Compatibilidade -->
+      <section class="module">
+        <h2>Compatibilidade do momento 🔮</h2>
+        <p>Digite os nomes e descubra o nível de química entre romance e risadas.</p>
+        <div class="row">
+          <input type="text" id="nome1" placeholder="Seu nome" />
+          <input type="text" id="nome2" placeholder="Larissa" />
+          <button class="btn" id="btn-ship">Calcular ship 💞</button>
+        </div>
+        <div id="ship-out" class="output"></div>
+      </section>
+
+
+      <!-- Chat entre 2 computadores -->
+      <section class="module">
+        <h2>Chat 2 pessoas (P2P) 💬</h2>
+        <p>Conversa em tempo real entre dois computadores. Não salva nada após fechar a página.</p>
+        <div class="row">
+          <button class="btn" id="btn-host">Criar sala (Host)</button>
+          <button class="btn ghost" id="btn-join">Entrar na sala (Guest)</button>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div style="flex:1; min-width:220px">
+            <label>Meu código (copie e envie)</label><br>
+            <textarea id="offer-out" placeholder="Vai aparecer aqui quando criar sala..."></textarea>
+          </div>
+          <div style="flex:1; min-width:220px">
+            <label>Código recebido</label><br>
+            <textarea id="offer-in" placeholder="Cole aqui o código que recebeu..."></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn ghost" id="btn-apply">Aplicar código recebido</button>
+        </div>
+
+        <div id="chat-status" class="output">Status: desconectado</div>
+        <div id="chat-log" class="chat-log" aria-live="polite"></div>
+        <div class="row">
+          <input type="text" id="chat-input" placeholder="Digite sua mensagem..." style="flex:1; min-width:200px" />
+          <button class="btn" id="btn-send">Enviar</button>
+        </div>
       </section>
     </section>
 
@@ -369,6 +435,191 @@
       burstHearts(14);
     })
 
+    // ====== Missões + desculpas engraçadas ======
+    const missaoOut = document.getElementById('missao-out');
+    const missoes = [
+      'Missão #1: tirar 3 selfies fofas e escolher a mais boba pra guardar.',
+      'Missão #2: duelinho de elogios por 60 segundos (sem repetir!).',
+      'Missão #3: escolher uma música e dançar 30 segundos sem vergonha.',
+      'Missão #4: inventar um apelido secreto nível romance premium.',
+      'Missão #5: fazer um mini piquenique com qualquer snack da casa.',
+      'Missão #6: mandar um áudio com voz de locutor apaixonado.'
+    ];
+    const desculpas = [
+      'Desculpa oficial: eu me atrasei porque estava escolhendo o melhor sorriso pra te ver 😌',
+      'Motivo técnico: coração em modo turbo quando penso em você 💓',
+      'Falha no sistema: meu GPS só recalcula rota pra onde você está 🗺️',
+      'Comprovante: perdi 5 minutos ensaiando como te achar ainda mais linda ✨',
+      'Relatório: fui interrompido por uma crise de saudade aguda 😅'
+    ];
+
+    document.getElementById('btn-missao').addEventListener('click', ()=>{
+      const pick = missoes[Math.floor(Math.random()*missoes.length)];
+      missaoOut.textContent = pick;
+      burstHearts(12);
+    });
+
+    document.getElementById('btn-desculpa').addEventListener('click', ()=>{
+      const pick = desculpas[Math.floor(Math.random()*desculpas.length)];
+      missaoOut.textContent = pick;
+    });
+
+    // ====== Compatibilidade divertida ======
+    function scoreFromNames(a, b){
+      const raw = (a + '💘' + b).toLowerCase().trim();
+      let sum = 0;
+      for(const ch of raw){ sum += ch.codePointAt(0) || 0; }
+      return (sum % 41) + 60; // 60-100
+    }
+
+    document.getElementById('btn-ship').addEventListener('click', ()=>{
+      const n1 = (document.getElementById('nome1').value || 'Matheus').trim();
+      const n2 = (document.getElementById('nome2').value || 'Larissa').trim();
+      const score = scoreFromNames(n1, n2);
+      const shipOut = document.getElementById('ship-out');
+      const msg =
+        score < 70 ? 'química em aquecimento com risadinhas tímidas 😄' :
+        score < 85 ? 'romance estável com potencial de comédia romântica 🍿' :
+                     'casal lendário: fofura + caos + paixão no talo 💥💖';
+      shipOut.innerHTML = `<strong>${n1} + ${n2}: ${score}%</strong><br>${msg}`;
+      if(score >= 85) burstHearts(18);
+    });
+
+
+
+    // ====== Chat P2P (2 computadores) ======
+    const chatStatus = document.getElementById('chat-status');
+    const chatLog = document.getElementById('chat-log');
+    const offerOut = document.getElementById('offer-out');
+    const offerIn = document.getElementById('offer-in');
+    const chatInput = document.getElementById('chat-input');
+    const btnSend = document.getElementById('btn-send');
+
+    let pc = null;
+    let dc = null;
+    let isHost = false;
+
+    const rtcConfig = {
+      iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }]
+    };
+
+    function setStatus(msg){
+      chatStatus.textContent = 'Status: ' + msg;
+    }
+
+    function addMsg(text, mine=false){
+      const m = document.createElement('div');
+      m.className = 'bubble ' + (mine ? 'me' : 'peer');
+      m.textContent = text;
+      chatLog.appendChild(m);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function safeJSONParse(raw){
+      try{ return JSON.parse(raw); }catch{return null;}
+    }
+
+    async function waitIceComplete(peer){
+      if(peer.iceGatheringState === 'complete') return;
+      await new Promise(resolve=>{
+        function check(){
+          if(peer.iceGatheringState === 'complete'){
+            peer.removeEventListener('icegatheringstatechange', check);
+            resolve();
+          }
+        }
+        peer.addEventListener('icegatheringstatechange', check);
+      });
+    }
+
+    function bindPeerCommon(peer){
+      peer.onconnectionstatechange = ()=>{
+        setStatus(peer.connectionState);
+      };
+      peer.ondatachannel = (ev)=>{
+        dc = ev.channel;
+        bindDataChannel(dc);
+      };
+    }
+
+    function bindDataChannel(channel){
+      channel.onopen = ()=> setStatus('conectado ✅');
+      channel.onclose = ()=> setStatus('canal fechado');
+      channel.onerror = ()=> setStatus('erro no canal');
+      channel.onmessage = (ev)=> addMsg(ev.data, false);
+    }
+
+    function resetConnection(){
+      if(dc){ try{ dc.close(); }catch{} }
+      if(pc){ try{ pc.close(); }catch{} }
+      pc = null;
+      dc = null;
+      setStatus('desconectado');
+    }
+
+    document.getElementById('btn-host').addEventListener('click', async ()=>{
+      resetConnection();
+      isHost = true;
+      pc = new RTCPeerConnection(rtcConfig);
+      bindPeerCommon(pc);
+      dc = pc.createDataChannel('chat');
+      bindDataChannel(dc);
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      await waitIceComplete(pc);
+      offerOut.value = JSON.stringify(pc.localDescription);
+      setStatus('host pronto - envie seu código');
+    });
+
+    document.getElementById('btn-join').addEventListener('click', async ()=>{
+      resetConnection();
+      isHost = false;
+      pc = new RTCPeerConnection(rtcConfig);
+      bindPeerCommon(pc);
+      setStatus('guest pronto - cole o código do host e aplique');
+    });
+
+    document.getElementById('btn-apply').addEventListener('click', async ()=>{
+      if(!pc){ setStatus('crie host ou guest primeiro'); return; }
+      const data = safeJSONParse(offerIn.value.trim());
+      if(!data || !data.type || !data.sdp){ setStatus('código inválido'); return; }
+
+      if(data.type === 'offer' && !isHost){
+        await pc.setRemoteDescription(data);
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        await waitIceComplete(pc);
+        offerOut.value = JSON.stringify(pc.localDescription);
+        setStatus('answer gerada - envie de volta para o host');
+        return;
+      }
+
+      if(data.type === 'answer' && isHost){
+        await pc.setRemoteDescription(data);
+        setStatus('answer aplicada - conectando...');
+        return;
+      }
+
+      setStatus('tipo de código não corresponde ao seu papel');
+    });
+
+    function sendMsg(){
+      const text = chatInput.value.trim();
+      if(!text) return;
+      if(!dc || dc.readyState !== 'open'){ setStatus('canal não está conectado'); return; }
+      dc.send(text);
+      addMsg(text, true);
+      chatInput.value = '';
+    }
+
+    btnSend.addEventListener('click', sendMsg);
+    chatInput.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        sendMsg();
+      }
+    });
     // ====== Efeito de corações ao estourar ======
     function burstHearts(qty=10){
       const rect = document.body.getBoundingClientRect();
